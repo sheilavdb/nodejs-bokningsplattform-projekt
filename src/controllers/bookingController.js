@@ -154,7 +154,7 @@ export const deleteBooking = async (req, res) => {
             return res.status(404).json({ message: "Bokning hittades inte" })
         }
         
-        if(userRole === "Admin" || booking.userId.toString() === userId ) {
+        if(userRole === "Admin" || booking.userId._id.toString() === userId ) {
             const deletedBooking= await Booking.findByIdAndDelete(bookingId);
             logger.info(`Bokning ${bookingId} raderas av ${userId}`);
             

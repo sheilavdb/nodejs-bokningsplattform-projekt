@@ -38,365 +38,273 @@ Detta är en backend applikation för en Coworking Space. Plattformen kan låta 
 
 Servern körs nu på http://localhost:5000
 
-
 ## API-dokumentation
 
-### Autentisering
+### Registrera användare:
+POST /auth/register
+Autentisering: Ingen
 
-#### Registrera användare
-- **POST** `/auth/register`
-- **Autentisering:** Ingen
-
-**Body:**
-```json
+Body:
 {
-  "username": "username",
-  "password": "password123",
-  "role": "User"
+    "username": "*username*",
+    "password": "*password*"
+    "role": "User || Admin"
 }
-```
 
-**Response:**
-```json
+Response:
+json
 {
-  "message": "Användare skapad",
-  "userId": "69a5b54b6502bfa95fabceae"
+    "message": "Användare skapad",
+    "userId": "..."
 }
-```
 
----
+### Logga in
+POST /auth/login
+Autentisering: Ingen
 
-#### Logga in
-- **POST** `/auth/login`
-- **Autentisering:** Ingen
-
-**Body:**
-```json
+Body:
 {
-  "username": "username",
-  "password": "password123"
+    "username": "*username*",
+    "password": "*password*"
 }
-```
 
-**Response:**
-```json
+Response: 
 {
-  "message": "Inloggad",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "69a5b54b6502bfa95fabceae",
-    "username": "username",
-    "role": "User"
-  }
-}
-```
-
----
-
-#### Hämta profil
-- **GET** `/auth/me`
-- **Autentisering:** Token krävs
-- **Headers:** `Authorization: Bearer <token>`
-
-**Response:**
-```json
-{
-  "message": "Du är inloggad",
-  "user": {
-    "userId": "69a5b54b6502bfa95fabceae",
-    "role": "User"
-  }
-}
-```
-
----
-
-#### Admin-only route
-- **GET** `/auth/admin-only`
-- **Autentisering:** Admin token krävs
-- **Headers:** `Authorization: Bearer <admin-token>`
-
-**Response:**
-```json
-{
-  "message": "Välkommen admin!",
-  "user": {
-    "userId": "69a5b54b6502bfa95fabceae",
-    "role": "Admin"
-  }
-}
-```
-
----
-
-#### Hämta alla användare
-- **GET** `/auth/users`
-- **Autentisering:** Ingen (i testläge - bör vara admin)
-
-**Response:**
-```json
-{
-  "users": [
-    {
-      "_id": "69a5b54b6502bfa95fabceae",
-      "username": "username",
-      "role": "User"
+    "message": "Inloggad",
+    "token": "eyJhbGc...",
+    "user": {
+      "id": "...",
+      "username": "*username*",
+      "role": "User || Admin"
     }
-  ]
 }
-```
 
----
+### Hämta profil
+GET /auth/me
+Autentisering: Token
+Headers: Authorization: Bearer *token*
 
-#### Ta bort användare
-- **DELETE** `/auth/users/:id`
-- **Autentisering:** Ingen (i testläge - bör vara admin)
+### Admin
+GET /auth/admin-only
+Autentisering: Admin token
+Headers: Authorization: Bearer *token*
 
-**Response:**
-```json
+Response:
 {
-  "message": "Användare raderat",
-  "user": {
-    "_id": "69a5b54b6502bfa95fabceae",
-    "username": "username"
-  }
-}
-```
-
----
-
-### Rum
-
-#### Hämta alla rum
-- **GET** `/rooms`
-- **Autentisering:** Token krävs
-- **Headers:** `Authorization: Bearer <token>`
-
-**Response:**
-```json
-{
-  "rooms": [
-    {
-      "_id": "69a5b6546502bfa95fabceb4",
-      "name": "Stockholm",
-      "capacity": 15,
-      "type": "conference"
+    "message": "Välkommen admin!",
+    "user": {
+      "userId": "...",
+      "role": "Admin"
     }
-  ]
 }
-```
 
----
+### Hämta alla användare
+GET /auth/users
+Autentisering: Ingen nu i testläget
 
-#### Skapa rum
-- **POST** `/rooms`
-- **Autentisering:** Admin token krävs
-- **Headers:** `Authorization: Bearer <admin-token>`
-
-**Body:**
-```json
+Response:
 {
-  "name": "Göteborg",
-  "capacity": 10,
-  "type": "workspace"
+    "users": [
+      {
+        "_id": "...",
+        "username": "*username*",
+        "role": "User || Admin"
+      }
+    ]
 }
-```
 
-**Response:**
-```json
+### Ta Bort användare
+DELETE /auth/users/:id
+Autentisering: Ingen i nuläget men ska vara admin token
+
+Response:
 {
-  "message": "Rum skapat",
-  "room": {
-    "_id": "69a5b6546502bfa95fabceb4",
-    "name": "Göteborg",
-    "capacity": 10,
-    "type": "workspace"
+    "message": "Användare raderat",
+    "user": {
+      "_id": "...",
+      "username": "*username*"
+    }
+}
+### Skapa rum
+POST /rooms
+Autentisering: Admin token
+Headers: Authorization: Bearer *admin-token*
+
+body:
+{
+    "name": "*room name*",
+    "capacity": ..,
+    "type": "conference || workspace"
+}
+
+response:
+{
+    "message": "Rum skapat",
+    "room": {
+        "_id": "...",
+        "name": "*room name*",
+        "capacity": ..,
+        "type": "conference || workspace"
+    }
+}
+
+### Hämta alla rum
+GET /rooms
+Autentisering: Token
+Headers: Authorization: Bearer *token*
+
+Response: 
+{
+    "rooms": [
+      {
+        "_id": "...",
+        "name": "*room name*",
+        "capacity": ..,
+        "type": "conference || workspace"
+      }
+    ]
+}
+
+### Uppdatera rum
+PUT /rooms/:id
+Autentisering: Admin token
+Headers: Authorization: Bearer *admin-token*
+
+Body:
+{
+    "name": "*room name* Uppdaterad",
+    "capacity": ..,
+    "type": "conference || workspace"
+}
+
+Response: 
+{
+    "message": "Rum uppdaterat",
+    "room": {
+      "_id": "...",
+      "name": "*room name* Uppdaterad",
+      "capacity": ..,
+      "type": "conference || workspace"
+    }
+}
+
+
+### Ta bort rum
+DELETE /rooms/:id
+Autentisering: Admin token
+Headers: Authorization: Bearer *admin-token*
+
+Response:
+{
+    "message": "Rum raderat",
+    "room": {
+      "_id": "...",
+      "name": "*room name*",
+      "capacity": ..,
+      "type": "conference || workspace"
+    }
+}
+
+### Hämta alla bokningar
+GET /bookings
+Autentisering: Admin token
+Headers: Authorization: Bearer *admin-token*
+
+response:
+{
+    "bookings": [
+      {
+        "_id": "...",
+        "roomId": {
+          "name": "*room name*",
+          "capacity": ..,
+          "type": "conference || workspace"
+        },
+        "userId": {
+          "username": "*username*"
+        },
+        "startTime": "2026-03-10T09:00:00.000Z",
+        "endTime": "2026-03-10T11:00:00.000Z"
+      }
+    ]
   }
-}
-```
 
----
+### Hämta mina bokningar
+GET /bookings/my-bookings
+Autentisering: Token
+Headers: Authorization: Bearer *token*
 
-#### Uppdatera rum
-- **PUT** `/rooms/:id`
-- **Autentisering:** Admin token krävs
-- **Headers:** `Authorization: Bearer <admin-token>`
-
-**Body:**
-```json
+response: 
 {
-  "name": "Stockholm Uppdaterad",
-  "capacity": 20,
-  "type": "conference"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Rum uppdaterat",
-  "room": {
-    "_id": "69a5b6546502bfa95fabceb4",
-    "name": "Stockholm Uppdaterad",
-    "capacity": 20,
-    "type": "conference"
+    "bookings": [
+      {
+        "_id": "...",
+        "roomId": {
+          "name": "*room name*"
+        },
+        "startTime": "2026-03-10T09:00:00.000Z",
+        "endTime": "2026-03-10T11:00:00.000Z"
+      }
+    ]
   }
-}
-```
 
----
+### Skapa Bokning
+POST /bookings
+Autentisering: Token
+Headers: Authorization: Bearer *token*
 
-#### Ta bort rum
-- **DELETE** `/rooms/:id`
-- **Autentisering:** Admin token krävs
-- **Headers:** `Authorization: Bearer <admin-token>`
-
-**Response:**
-```json
+body:
 {
-  "message": "Rum raderat",
-  "room": {
-    "_id": "69a5b6546502bfa95fabceb4",
-    "name": "Stockholm",
-    "capacity": 15,
-    "type": "conference"
-  }
+    "roomId": "...",
+    "startTime": "2026-03-10T09:00:00Z",
+    "endTime": "2026-03-10T11:00:00Z"
 }
-```
 
----
-
-### Bokningar
-
-#### Hämta alla bokningar (Admin)
-- **GET** `/bookings`
-- **Autentisering:** Admin token krävs
-- **Headers:** `Authorization: Bearer <admin-token>`
-
-**Response:**
-```json
+response:
 {
-  "bookings": [
-    {
-      "_id": "69a5bab66502bfa95fabcec3",
-      "roomId": {
-        "_id": "69a5b6546502bfa95fabceb4",
-        "name": "Stockholm",
-        "capacity": 15,
-        "type": "conference"
-      },
-      "userId": {
-        "_id": "69a5b54b6502bfa95fabceae",
-        "username": "username"
-      },
+    "message": "Bokning skapad",
+    "booking": {
+      "_id": "...",
+      "roomId": "...",
+      "userId": "...",
       "startTime": "2026-03-10T09:00:00.000Z",
       "endTime": "2026-03-10T11:00:00.000Z"
     }
-  ]
 }
-```
 
----
+### Uppdatera Bokning
+PUT /bookings/:id
+Autentisering: User token för egen bokning, Admin token för alla bokningar
+Headers: Authorization: Bearer *token*
 
-#### Hämta mina bokningar
-- **GET** `/bookings/my-bookings`
-- **Autentisering:** Token krävs
-- **Headers:** `Authorization: Bearer <token>`
-
-**Response:**
-```json
+body:
 {
-  "bookings": [
-    {
-      "_id": "69a5bab66502bfa95fabcec3",
-      "roomId": {
-        "_id": "69a5b6546502bfa95fabceb4",
-        "name": "Stockholm",
-        "capacity": 15,
-        "type": "conference"
-      },
-      "userId": "69a5b54b6502bfa95fabceae",
-      "startTime": "2026-03-10T09:00:00.000Z",
-      "endTime": "2026-03-10T11:00:00.000Z"
+    "startTime": "2026-03-10T14:00:00Z",
+    "endTime": "2026-03-10T16:00:00Z"
+}
+
+response: 
+{
+    "message": "Bokning Uppdaterad",
+    "booking": {
+      "_id": "...",
+      "startTime": "2026-03-10T14:00:00.000Z",
+      "endTime": "2026-03-10T16:00:00.000Z"
     }
-  ]
 }
-```
 
----
 
-#### Skapa bokning
-- **POST** `/bookings`
-- **Autentisering:** Token krävs
-- **Headers:** `Authorization: Bearer <token>`
+### Ta bort bokning
+DELETE /bookings/:id
+Autentisering: User token för egen bokning, Admin token för alla bokningar
+Headers: Authorization: Bearer *token*
 
-**Body:**
-```json
+response:
 {
-  "roomId": "69a5b6546502bfa95fabceb4",
-  "startTime": "2026-03-10T09:00:00Z",
-  "endTime": "2026-03-10T11:00:00Z"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Bokning skapad",
-  "booking": {
-    "_id": "69a5bab66502bfa95fabcec3",
-    "roomId": "69a5b6546502bfa95fabceb4",
-    "userId": "69a5b54b6502bfa95fabceae",
-    "startTime": "2026-03-10T09:00:00.000Z",
-    "endTime": "2026-03-10T11:00:00.000Z"
+    "message": "Bokning raderat",
+    "booking": {
+      "_id": "...",
+      "roomId": "...",
+      "userId": "..."
+    }
   }
-}
-```
-
----
-
-#### Uppdatera bokning
-- **PUT** `/bookings/:id`
-- **Autentisering:** Token krävs (egen bokning eller admin)
-- **Headers:** `Authorization: Bearer <token>`
-
-**Body:**
-```json
-{
-  "startTime": "2026-03-10T14:00:00Z",
-  "endTime": "2026-03-10T16:00:00Z"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Bokning Uppdaterad",
-  "booking": {
-    "_id": "69a5bab66502bfa95fabcec3",
-    "roomId": "69a5b6546502bfa95fabceb4",
-    "userId": "69a5b54b6502bfa95fabceae",
-    "startTime": "2026-03-10T14:00:00.000Z",
-    "endTime": "2026-03-10T16:00:00.000Z"
-  }
-}
-```
-
----
-
-#### Ta bort bokning
-- **DELETE** `/bookings/:id`
-- **Autentisering:** Token krävs (egen bokning eller admin)
-- **Headers:** `Authorization: Bearer <token>`
-
-**Response:**
-```json
-{
-  "message": "Bokning raderat",
-  "booking": {
-    "_id": "69a5bab66502bfa95fabcec3",
-    "roomId": "69a5b6546502bfa95fabceb4",
-    "userId": "69a5b54b6502bfa95fabceae"
-  }
-}
-```
