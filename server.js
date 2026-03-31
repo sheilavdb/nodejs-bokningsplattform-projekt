@@ -13,7 +13,7 @@ const app = express();
 const server = http.createServer(app)
 const io = new Server(server);
 
-app.set("io". io);
+app.set("io", io);
 
 // Middleware
 app.use(express.json());
@@ -23,7 +23,12 @@ app.use(morgan('dev'));
 app.use(express.static('public'));
 
 // Anslut till databas MONGODB
-connectDB();
+try{
+  await connectDB();
+  console.log("MongoDB connected");
+} catch (error) {
+  console.log("MongoDB failed", error)
+}
 
 // Socket connection
 io.on('connection', (socket) => {
@@ -45,6 +50,6 @@ app.get('/api', (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server körs på http://localhost:${PORT}`);
 });
