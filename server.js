@@ -9,6 +9,8 @@ import authRoutes from "./src/routes/authRoutes.js"
 import roomRoutes from './src/routes/roomRoutes.js'
 import bookingRoutes from './src/routes/bookingRoutes.js'
 
+console.log(" FILE STARTED");
+
 const app = express();
 const server = http.createServer(app)
 const io = new Server(server);
@@ -50,6 +52,8 @@ app.get('/api', (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
+
+console.log(" Ready to listen");
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server körs på http://localhost:${PORT}`);
 });
