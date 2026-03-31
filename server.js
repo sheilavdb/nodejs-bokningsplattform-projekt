@@ -19,6 +19,9 @@ app.set("io". io);
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Serva HTML filer
+app.use(express.static('public'));
+
 // Anslut till databas MONGODB
 connectDB();
 
@@ -36,12 +39,12 @@ app.use('/auth', authRoutes);
 app.use('/rooms', roomRoutes);
 app.use('/bookings', bookingRoutes)
 
-// Test route
-app.get('/', (req, res) => {
+// Api route
+app.get('/api', (req, res) => {
   res.json({ message: 'Bokningsplattform API' });
 });
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`Server körs på port ${PORT}`);
+  console.log(`Server körs på http://localhost:${PORT}`);
 });
