@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // Serva HTML filer
-//app.use(express.static('public'));
+app.use(express.static('public'));
 
 /* Anslut till databas MONGODB
 try{
