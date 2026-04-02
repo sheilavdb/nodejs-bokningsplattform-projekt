@@ -5,7 +5,7 @@ import http from "http";
 //import logger from "./src/utils/logger.js"
 import morgan from 'morgan';
 import connectDB from "./src/config/db.js";
-//import authRoutes from "./src/routes/authRoutes.js"
+import authRoutes from "./src/routes/authRoutes.js"
 //import roomRoutes from './src/routes/roomRoutes.js'
 //import bookingRoutes from './src/routes/bookingRoutes.js'
 
@@ -32,7 +32,7 @@ io.on('connection', (socket) => {
 }); */
 
 // Routes
-//app.use('/auth', authRoutes);
+app.use('/auth', authRoutes);
 //app.use('/rooms', roomRoutes);
 //app.use('/bookings', bookingRoutes)
 
