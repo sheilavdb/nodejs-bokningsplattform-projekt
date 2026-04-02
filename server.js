@@ -4,7 +4,7 @@ import http from "http";
 //import { Server } from "socket.io";
 //import logger from "./src/utils/logger.js"
 import morgan from 'morgan';
-//import connectDB from "./src/config/db.js";
+import connectDB from "./src/config/db.js";
 //import authRoutes from "./src/routes/authRoutes.js"
 //import roomRoutes from './src/routes/roomRoutes.js'
 //import bookingRoutes from './src/routes/bookingRoutes.js'
@@ -21,14 +21,6 @@ app.use(morgan('dev'));
 
 // Serva HTML filer
 app.use(express.static('public'));
-
-/* Anslut till databas MONGODB
-try{
-  await connectDB();
-  console.log("MongoDB connected");
-} catch (error) {
-  console.log("MongoDB failed", error)
-}*/
 
 /* Socket connection
 io.on('connection', (socket) => {
@@ -56,6 +48,17 @@ app.get('/api', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server körs på http://localhost:${PORT}`);
-});
+async function startServer() {
+  try {
+    await connectDB();
+    console.log(" MongoDB connected");
+  } catch (error) {
+    console.log(" MongoDB failed:", error.message);
+  }
+
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server körs på ${PORT}`);
+  });
+}
+
+startServer();
