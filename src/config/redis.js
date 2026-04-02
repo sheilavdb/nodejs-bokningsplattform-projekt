@@ -2,10 +2,7 @@ import { createClient } from "redis";
 import logger from "../utils/logger.js"
 
 const client = createClient({
-    socket: {
-        host: 'localhost',
-        port: 6379
-    }
+    url: process.env.REDIS_URL || 'redis://localhost:6379'
 });
 
 client.on('error', (error) => {
@@ -16,6 +13,10 @@ client.on('connect', () => {
     logger.info('Redis ansluten');
 });
 
+try {
 await client.connect();
+} catch (error) {
+    logger.error(`Kunde inte ansluta till Redis: ${error.message}`);
+}
 
 export default client;
