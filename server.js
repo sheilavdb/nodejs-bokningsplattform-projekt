@@ -3,7 +3,7 @@ import express from 'express';
 import http from "http";
 //import { Server } from "socket.io";
 //import logger from "./src/utils/logger.js"
-//import morgan from 'morgan';
+import morgan from 'morgan';
 //import connectDB from "./src/config/db.js";
 //import authRoutes from "./src/routes/authRoutes.js"
 //import roomRoutes from './src/routes/roomRoutes.js'
@@ -15,9 +15,9 @@ const server = http.createServer(app)
 
 //app.set("io", io);
 
-/* Middleware
+// Middleware
 app.use(express.json());
-app.use(morgan('dev'));*/
+app.use(morgan('dev'));
 
 // Serva HTML filer
 //app.use(express.static('public'));
