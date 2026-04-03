@@ -38,7 +38,7 @@ app.use('/bookings', bookingRoutes)
 
 //REMOVE AFTER TEST!!!
 app.get("/", (req, res) => {
-  res.send("Server works!");
+  res.json({ message: "Server works!" });
 });
 
 // Api route
