@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import logger from "../utils/logger";
 
 export const verifyToken = (req, res, next) => {
 try {

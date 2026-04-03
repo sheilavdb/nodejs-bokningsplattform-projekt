@@ -1,4 +1,5 @@
 import Booking from "../models/Booking.js";
+import Room from "../models/Room.js"
 import logger from "../utils/logger.js"
 
 export const createBooking = async (req, res)  => {
@@ -8,6 +9,15 @@ export const createBooking = async (req, res)  => {
         logger.info(`Användare ${userId} försöker boka rum ${roomId}`);
         if(!roomId || !startTime || !endTime){
             return res.status(400).json({ message: "Fyll i alla fält" })
+        }
+
+        if(new Date(endTime) <= new Date(startTime)) {
+            return res.status(400).json({ message: "Sluttid måste vara senare än starttid" });
+        }
+
+        const room = await Room.findById(roomId);
+        if(!room) {
+            return res.status(404).json({ message:"Rummet hittades inte" });
         }
 
         const existingBookings = await Booking.find({ roomId: roomId });
@@ -89,6 +99,10 @@ export const updateBooking = async (req, res) => {
             return res.status(404).json({ message: "Bokning hittas inte"})
         }
         if (userRole === "Admin" || booking.userId.toString() === userId) {
+            if (new Date(endTime) <= new Date(startTime)) {
+                return res.status(400).json({ message:"sluttid måste vara senare än starttid" })
+            }
+
             const existingBookings = await Booking.find({
                 roomId: booking.roomId,
                 _id: { $ne: bookingId}
@@ -156,7 +170,7 @@ export const deleteBooking = async (req, res) => {
         
         if(userRole === "Admin" || booking.userId._id.toString() === userId ) {
             const deletedBooking= await Booking.findByIdAndDelete(bookingId);
-            logger.info(`Bokning ${bookingId} raderas av ${userId}`);
+            logger.info(`Bokning ${bookingId} raderad av ${userId}`);
             
             const io = req.app.get('io');
             io.emit('bookingDeleted', {

@@ -21,6 +21,8 @@ router.get('/admin-only', verifyToken, verifyAdmin, (req, res) => {
   });
 });
 
+// Väljer att ha oskyddat för att förenkla att lägga till, uppdatera och radera users. 
+// Vanligtvis lägger jag till verifyToken och verifyAdmin i detta
 router.get('/users', getAllUsers);
 router.delete('/users/:id', deleteUser);
 
