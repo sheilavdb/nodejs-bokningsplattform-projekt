@@ -56,6 +56,12 @@ async function startServer() {
     console.log(" MongoDB failed:", error.message);
   }
 
+  try {
+    await connectRedis();
+  } catch(error) {
+    logger.error("Redis faled:", error.message);
+  }
+  
   server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server körs på ${PORT}`);
   });

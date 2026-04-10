@@ -1,6 +1,6 @@
 import Room from "../models/Room.js"
 import logger from "../utils/logger.js";
-import redis from "../config/redis.js";
+import client from "../config/redis.js";
 
 export const createRoom = async (req, res) => {
     try{
@@ -11,7 +11,7 @@ export const createRoom = async (req, res) => {
         }
 
         const room = await Room.create({ name, capacity, type });
-        await redis.del('rooms');
+        await client.del('rooms');
         logger.info(`Rum skapat: ${room.name}, ${room._id}`);
         res.status(201).json({ message: "Rum skapat", room })
 
@@ -23,7 +23,7 @@ export const createRoom = async (req, res) => {
 
 export const getAllRooms = async (req, res) => {
     try {
-        const cachedRoomsData = await redis.get('rooms');
+        const cachedRoomsData = await client.get('rooms');
         if(cachedRoomsData) {
             logger.info(`Rum hämtade från cache`);
             return res.status(200).json(JSON.parse(cachedRoomsData));
@@ -32,7 +32,7 @@ export const getAllRooms = async (req, res) => {
         const allRooms = await Room.find()
         
         const responseData = { rooms: allRooms };
-        await redis.setEx('rooms', 60, JSON.stringify(responseData));
+        await client.setEx('rooms', 60, JSON.stringify(responseData));
         logger.info(`Alla rum hämtade från databas: ${allRooms.length} rooms`)
         res.status(200).json(responseData);
 
@@ -57,7 +57,7 @@ export const updateRoom = async (req, res) => {
             logger.warn(`Rum hittades inte: ${id}`);
             return res.status(404).json({ message: "Rum hittades inte "});
         }
-        await redis.del('rooms');
+        await client.del('rooms');
         logger.info(`Rum uppdaterat: ${updatedRoom.name}, ${updatedRoom._id}`)
         res.status(200).json({ message: "Rum uppdaterat", room: updatedRoom });
     } catch (error) {
@@ -76,7 +76,7 @@ export const deleteRoom = async (req, res) => {
         logger.warn(`Rum hittades inte: ${id}`);
         return res.status(404).json({ message: "Rum hittades inte" });
     }
-    await redis.del('rooms');
+    await client.del('rooms');
     logger.info(`Rum raderat: ${deletedRoom.name}, ${deletedRoom._id}`)
     res.status(200).json({ message: "Rum raderat", room: deletedRoom });
 
