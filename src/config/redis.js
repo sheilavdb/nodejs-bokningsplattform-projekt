@@ -16,8 +16,10 @@ client.on('connect', () => {
 export const connectRedis = async () => {
     try {
         await client.connect();
+        console.log('Redis connected');
     } catch (error) {
         logger.error(`Kunde inte ansluta till Redis: ${error.message}`);
+        console.log('Redis error details:', error);
     }
 };
 

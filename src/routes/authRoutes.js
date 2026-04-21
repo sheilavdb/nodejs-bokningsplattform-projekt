@@ -1,10 +1,20 @@
 import express from 'express';
+import { body } from 'express-validator';
 import { register, login, getAllUsers, deleteUser } from '../controllers/authController.js';
 import { verifyToken, verifyAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.post('/register', register);
+router.post('/register', 
+    body('username')
+        .trim()
+        .isAlphanumeric()
+        .isLength({ min: 3, max: 20 }),
+    body('password')
+        .isLength({ min: 6 }),
+    register
+);
+
 router.post('/login', login);
 
 router.get("/me", verifyToken, (req,res) => {

@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import logger from "./src/utils/logger.js"
 import morgan from 'morgan';
 import connectDB from "./src/config/db.js";
+import { connectRedis } from './src/config/redis.js';
 import authRoutes from "./src/routes/authRoutes.js"
 import roomRoutes from './src/routes/roomRoutes.js'
 import bookingRoutes from './src/routes/bookingRoutes.js'
@@ -59,7 +60,7 @@ async function startServer() {
   try {
     await connectRedis();
   } catch(error) {
-    logger.error("Redis faled:", error.message);
+    console.log("Redis failed:", error.message);
   }
   
   server.listen(PORT, '0.0.0.0', () => {
